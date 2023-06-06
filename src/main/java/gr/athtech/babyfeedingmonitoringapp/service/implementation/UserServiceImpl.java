@@ -5,14 +5,12 @@ import gr.athtech.babyfeedingmonitoringapp.repository.UserRepository;
 import gr.athtech.babyfeedingmonitoringapp.service.UserService;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-@NoArgsConstructor
 @Named
 public class UserServiceImpl implements UserService {
 

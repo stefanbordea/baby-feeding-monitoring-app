@@ -5,14 +5,12 @@ import gr.athtech.babyfeedingmonitoringapp.repository.FeedingSessionRepository;
 import gr.athtech.babyfeedingmonitoringapp.service.FeedingSessionService;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-@NoArgsConstructor
 @Named
 public class FeedingSessionServiceImpl implements FeedingSessionService {
 

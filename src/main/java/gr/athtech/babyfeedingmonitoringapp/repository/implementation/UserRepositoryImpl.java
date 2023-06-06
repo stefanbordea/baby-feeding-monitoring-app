@@ -5,7 +5,6 @@ import gr.athtech.babyfeedingmonitoringapp.repository.UserRepository;
 import jakarta.inject.Named;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-@NoArgsConstructor
 @Named
 public class UserRepositoryImpl implements UserRepository {
 
