@@ -3,15 +3,16 @@ package gr.athtech.babyfeedingmonitoringapp.service;
 import gr.athtech.babyfeedingmonitoringapp.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
-    User create(User user);
+    Optional<User> create(User user);
 
-    User findById(Long id);
+    Optional<User> findById(Long id);
 
     List<User> findAll();
 
-    User update(User user);
+    Optional<User> update(User user);
 
     void delete(User user);
 }

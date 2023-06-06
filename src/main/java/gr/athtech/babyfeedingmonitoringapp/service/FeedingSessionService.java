@@ -3,15 +3,16 @@ package gr.athtech.babyfeedingmonitoringapp.service;
 import gr.athtech.babyfeedingmonitoringapp.model.FeedingSession;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FeedingSessionService {
-    FeedingSession create(FeedingSession feedingSession);
+    Optional<FeedingSession> create(FeedingSession feedingSession);
 
-    FeedingSession findById(Long id);
+    Optional<FeedingSession> findById(Long id);
 
     List<FeedingSession> findAll();
 
-    FeedingSession update(FeedingSession feedingSession);
+    Optional<FeedingSession> update(FeedingSession feedingSession);
 
     void delete(FeedingSession feedingSession);
 }
