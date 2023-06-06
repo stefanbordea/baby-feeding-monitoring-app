@@ -2,22 +2,27 @@ package gr.athtech.babyfeedingmonitoringapp.repository.implementation;
 
 import gr.athtech.babyfeedingmonitoringapp.model.FeedingSession;
 import gr.athtech.babyfeedingmonitoringapp.repository.FeedingSessionRepository;
+import jakarta.inject.Named;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
+@NoArgsConstructor
+@Named
 public class FeedingSessionRepositoryImpl implements FeedingSessionRepository {
 
     @PersistenceContext
-    private final EntityManager entityManager;
+    private EntityManager entityManager;
 
-    private final Logger logger;
+    private final Logger logger = LoggerFactory.getLogger(FeedingSessionRepositoryImpl.class);
 
     @Override
     public Optional<FeedingSession> create(FeedingSession feedingSession) {

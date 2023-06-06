@@ -2,22 +2,27 @@ package gr.athtech.babyfeedingmonitoringapp.repository.implementation;
 
 import gr.athtech.babyfeedingmonitoringapp.model.User;
 import gr.athtech.babyfeedingmonitoringapp.repository.UserRepository;
+import jakarta.inject.Named;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
+@NoArgsConstructor
+@Named
 public class UserRepositoryImpl implements UserRepository {
 
     @PersistenceContext
-    private final EntityManager entityManager;
+    private EntityManager entityManager;
 
-    private final Logger logger;
+    private final Logger logger = LoggerFactory.getLogger(UserRepositoryImpl.class);
 
     @Override
     public Optional<User> create(User user) {
