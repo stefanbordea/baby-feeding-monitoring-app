@@ -1,7 +1,6 @@
 package gr.athtech.babyfeedingmonitoringapp.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -11,7 +10,8 @@ import lombok.Setter;
 
 import java.util.Date;
 
-@Entity(name = "FEEDING_SESSIONS")
+@Entity
+@Table(name = "FEEDING_SESSIONS")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -32,4 +32,8 @@ public class FeedingSession extends BaseEntity {
     @NotEmpty
     @NotNull
     private Date endTime;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

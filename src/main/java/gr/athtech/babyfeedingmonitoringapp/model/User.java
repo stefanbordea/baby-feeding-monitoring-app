@@ -1,9 +1,6 @@
 package gr.athtech.babyfeedingmonitoringapp.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -11,7 +8,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity(name = "USERS")
+import java.util.List;
+
+@Entity
+@Table(name = "USERS")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -30,4 +30,7 @@ public class User extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToMany(mappedBy = "user")
+    private List<FeedingSession> feedingSessions;
 }
