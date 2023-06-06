@@ -24,11 +24,13 @@ public class FeedingSession extends BaseEntity {
     private Double milkConsumed;
 
     @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     @NotEmpty
     @NotNull
     private Date startTime;
 
     @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     @NotEmpty
     @NotNull
     private Date endTime;
