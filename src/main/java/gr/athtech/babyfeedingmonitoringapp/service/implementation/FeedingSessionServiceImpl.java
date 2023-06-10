@@ -1,5 +1,6 @@
 package gr.athtech.babyfeedingmonitoringapp.service.implementation;
 
+import gr.athtech.babyfeedingmonitoringapp.dto.AverageFeedingDurationDto;
 import gr.athtech.babyfeedingmonitoringapp.dto.FeedingSessionDto;
 import gr.athtech.babyfeedingmonitoringapp.model.FeedingSession;
 import gr.athtech.babyfeedingmonitoringapp.repository.FeedingSessionRepository;
@@ -20,8 +21,40 @@ public class FeedingSessionServiceImpl implements FeedingSessionService {
     private FeedingSessionRepository feedingSessionRepository;
 
 
+    @Override
     public List<FeedingSessionDto> findByTimePeriod(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
+        if (startTime == null) {
+            startTime = LocalDateTime.of(1970, 1, 1, 0, 0, 1);
+        }
+
+        if (endTime == null) {
+            endTime = LocalDateTime.now();
+        }
         return feedingSessionRepository.findByTimePeriod(userId, startTime, endTime);
+    }
+
+    @Override
+    public FeedingSessionDto calculateAverageMilkConsumed(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
+        if (startTime == null) {
+            startTime = LocalDateTime.of(1970, 1, 1, 0, 0, 1);
+        }
+
+        if (endTime == null) {
+            endTime = LocalDateTime.now();
+        }
+        return feedingSessionRepository.calculateAverageMilkConsumed(userId, startTime, endTime);
+    }
+
+    @Override
+    public AverageFeedingDurationDto calculateAverageFeedingDuration(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
+        if (startTime == null) {
+            startTime = LocalDateTime.of(1970, 1, 1, 0, 0, 1);
+        }
+
+        if (endTime == null) {
+            endTime = LocalDateTime.now();
+        }
+        return feedingSessionRepository.calculateAverageFeedingDuration(userId, startTime, endTime);
     }
 
     @Override

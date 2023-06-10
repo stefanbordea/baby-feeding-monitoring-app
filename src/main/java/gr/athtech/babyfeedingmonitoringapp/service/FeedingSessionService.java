@@ -1,5 +1,6 @@
 package gr.athtech.babyfeedingmonitoringapp.service;
 
+import gr.athtech.babyfeedingmonitoringapp.dto.AverageFeedingDurationDto;
 import gr.athtech.babyfeedingmonitoringapp.dto.FeedingSessionDto;
 import gr.athtech.babyfeedingmonitoringapp.model.FeedingSession;
 
@@ -19,4 +20,8 @@ public interface FeedingSessionService {
     void delete(FeedingSession feedingSession);
 
     List<FeedingSessionDto> findByTimePeriod(Long userId, LocalDateTime startTime, LocalDateTime endTime);
+
+    FeedingSessionDto calculateAverageMilkConsumed(Long userId, LocalDateTime startTime, LocalDateTime endTime);
+
+    AverageFeedingDurationDto calculateAverageFeedingDuration(Long userId, LocalDateTime startTime, LocalDateTime endTime);
 }

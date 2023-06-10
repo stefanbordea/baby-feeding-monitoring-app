@@ -1,15 +1,18 @@
 package gr.athtech.babyfeedingmonitoringapp.repository.implementation;
 
+import gr.athtech.babyfeedingmonitoringapp.dto.AverageFeedingDurationDto;
 import gr.athtech.babyfeedingmonitoringapp.dto.FeedingSessionDto;
 import gr.athtech.babyfeedingmonitoringapp.model.FeedingSession;
 import gr.athtech.babyfeedingmonitoringapp.model.User;
 import gr.athtech.babyfeedingmonitoringapp.repository.FeedingSessionRepository;
 import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
+import org.postgresql.util.PGInterval;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +28,12 @@ public class FeedingSessionRepositoryImpl implements FeedingSessionRepository {
     private final Logger logger = LoggerFactory.getLogger(FeedingSessionRepositoryImpl.class);
 
     private Connection getConnection() throws SQLException {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            logger.error("PostgreSQL JDBC Driver not found");
+            throw new SQLException("PostgreSQL JDBC Driver not found", e);
+        }
         return DriverManager.getConnection(DB_URL, USER, PASS);
     }
 
@@ -58,47 +67,58 @@ public class FeedingSessionRepositoryImpl implements FeedingSessionRepository {
     }
 
     @Override
-    public Double calculateAverageMilkConsumed(LocalDateTime startTime, LocalDateTime endTime) {
-        double averageMilkConsumed = 0.0;
+    public FeedingSessionDto calculateAverageMilkConsumed(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
+        FeedingSessionDto feedingSession = new FeedingSessionDto();
 
         try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement("SELECT AVG(milkConsumed) FROM FEEDING_SESSIONS WHERE startTime >= ? AND endTime <= ?")) {
+             PreparedStatement stmt = conn.prepareStatement("SELECT user_id, AVG(milkConsumed) AS avg, MIN(startTime) AS starttime, MAX(endTime) AS endtime FROM FEEDING_SESSIONS WHERE user_id = ? AND startTime >= ? AND endTime <= ? GROUP BY  user_id")) {
 
-            stmt.setTimestamp(1, Timestamp.valueOf(startTime));
-            stmt.setTimestamp(2, Timestamp.valueOf(endTime));
+            stmt.setLong(1, userId);
+            stmt.setTimestamp(2, Timestamp.valueOf(startTime));
+            stmt.setTimestamp(3, Timestamp.valueOf(endTime));
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    averageMilkConsumed = rs.getDouble(1);
+                    feedingSession.setUserId(rs.getLong("user_id"));
+                    feedingSession.setMilkConsumed(rs.getDouble("avg"));
+                    feedingSession.setStartTime(rs.getTimestamp("startTime").toLocalDateTime());
+                    feedingSession.setEndTime(rs.getTimestamp("endTime").toLocalDateTime());
                 }
             }
         } catch (SQLException e) {
             logger.error(e.getMessage(), "Error calculating average milk consumed");
         }
-
-        return averageMilkConsumed;
+        return feedingSession;
     }
 
     @Override
-    public Double calculateAverageFeedingDuration(LocalDateTime startTime, LocalDateTime endTime) {
-        double averageDuration = 0.0;
+    public AverageFeedingDurationDto calculateAverageFeedingDuration(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
+        AverageFeedingDurationDto feedDuration = new AverageFeedingDurationDto();
 
         try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement("SELECT AVG(endTime - startTime) FROM FEEDING_SESSIONS WHERE startTime >= ? AND endTime <= ?")) {
+             PreparedStatement stmt = conn.prepareStatement("SELECT user_id, AVG(endTime - startTime) as avg, MIN(startTime) AS starttime, MAX(endTime) AS endtime FROM FEEDING_SESSIONS WHERE user_id = ? AND startTime >= ? AND endTime <= ? GROUP BY user_id")) {
 
-            stmt.setTimestamp(1, Timestamp.valueOf(startTime));
-            stmt.setTimestamp(2, Timestamp.valueOf(endTime));
+            stmt.setLong(1, userId);
+            stmt.setTimestamp(2, Timestamp.valueOf(startTime));
+            stmt.setTimestamp(3, Timestamp.valueOf(endTime));
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    averageDuration = rs.getDouble(1);
+                    feedDuration.setUserId(rs.getLong("user_id"));
+                    PGInterval pgInterval = (PGInterval) rs.getObject("avg");
+                    Duration duration = Duration.ofDays(pgInterval.getDays())
+                            .plusHours(pgInterval.getHours())
+                            .plusMinutes(pgInterval.getMinutes())
+                            .plusSeconds((long) pgInterval.getSeconds());
+                    feedDuration.setAverageFeedingDuration(duration);
+                    feedDuration.setStartTime(rs.getTimestamp("startTime").toLocalDateTime());
+                    feedDuration.setEndTime(rs.getTimestamp("endTime").toLocalDateTime());
                 }
             }
         } catch (SQLException e) {
             logger.error(e.getMessage(), "Error calculating average feeding duration");
         }
-
-        return averageDuration;
+        return feedDuration;
     }
 
     @Override
