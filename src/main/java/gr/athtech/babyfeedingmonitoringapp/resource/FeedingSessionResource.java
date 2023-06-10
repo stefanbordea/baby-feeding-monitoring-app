@@ -4,6 +4,7 @@ import gr.athtech.babyfeedingmonitoringapp.dto.AverageFeedingDurationDto;
 import gr.athtech.babyfeedingmonitoringapp.dto.FeedingSessionDto;
 import gr.athtech.babyfeedingmonitoringapp.dto.TimePeriodDto;
 import gr.athtech.babyfeedingmonitoringapp.service.FeedingSessionService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
@@ -25,6 +26,7 @@ public class FeedingSessionResource {
     @Path("/sessions")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"PHYSICIAN", "ADMIN"})
     public Response getFeedingSessionsByTimePeriod(TimePeriodDto timePeriodDto) {
         Long userId = timePeriodDto.getUserId();
         LocalDateTime startTime = timePeriodDto.getStartTime();
@@ -37,6 +39,7 @@ public class FeedingSessionResource {
     @Path("/averageMilk")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"PHYSICIAN", "ADMIN"})
     public Response getAverageMilkPerFeedingSession(TimePeriodDto timePeriodDto) {
         Long userId = timePeriodDto.getUserId();
         LocalDateTime startTime = timePeriodDto.getStartTime();
@@ -49,6 +52,7 @@ public class FeedingSessionResource {
     @Path("/averageDuration")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"PHYSICIAN", "ADMIN"})
     public Response getAverageFeedingSessionDuration(TimePeriodDto timePeriodDto) {
         Long userId = timePeriodDto.getUserId();
         LocalDateTime startTime = timePeriodDto.getStartTime();
