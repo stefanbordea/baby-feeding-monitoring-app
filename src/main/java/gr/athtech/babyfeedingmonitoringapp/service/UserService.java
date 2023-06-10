@@ -1,5 +1,6 @@
 package gr.athtech.babyfeedingmonitoringapp.service;
 
+import gr.athtech.babyfeedingmonitoringapp.model.Role;
 import gr.athtech.babyfeedingmonitoringapp.model.User;
 
 import java.util.List;
@@ -15,4 +16,6 @@ public interface UserService {
     Optional<User> update(User user);
 
     void delete(User user);
+
+    Role checkUserRole(String username, String password);
 }

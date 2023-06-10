@@ -1,5 +1,6 @@
 package gr.athtech.babyfeedingmonitoringapp.service.implementation;
 
+import gr.athtech.babyfeedingmonitoringapp.model.Role;
 import gr.athtech.babyfeedingmonitoringapp.model.User;
 import gr.athtech.babyfeedingmonitoringapp.repository.UserRepository;
 import gr.athtech.babyfeedingmonitoringapp.service.UserService;
@@ -16,6 +17,11 @@ public class UserServiceImpl implements UserService {
 
     @Inject
     private UserRepository userRepository;
+
+    @Override
+    public Role checkUserRole(String username, String password) {
+        return userRepository.checkUserRole(username, password);
+    }
 
     @Override
     public Optional<User> create(User user) {

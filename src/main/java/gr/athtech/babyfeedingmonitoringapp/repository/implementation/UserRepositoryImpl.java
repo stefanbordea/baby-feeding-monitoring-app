@@ -34,6 +34,27 @@ public class UserRepositoryImpl implements UserRepository {
     private final Logger logger = LoggerFactory.getLogger(UserRepositoryImpl.class);
 
     @Override
+    public Role checkUserRole(String username, String password) {
+        Role role = null;
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement("SELECT role FROM users WHERE username = ? AND password = ?")) {
+
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    role = Role.valueOf(rs.getString("role"));
+                }
+            }
+        } catch (SQLException e) {
+            logger.error("Error retrieving the role of the user: {}", e.getMessage());
+        }
+        return role;
+    }
+
+    @Override
     public Optional<User> create(User user) {
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(
