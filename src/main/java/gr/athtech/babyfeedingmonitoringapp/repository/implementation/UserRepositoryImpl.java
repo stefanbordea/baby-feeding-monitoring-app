@@ -22,6 +22,12 @@ public class UserRepositoryImpl implements UserRepository {
     private static final String PASS = "password";
 
     private Connection getConnection() throws SQLException {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            logger.error("PostgreSQL JDBC Driver not found");
+            throw new SQLException("PostgreSQL JDBC Driver not found", e);
+        }
         return DriverManager.getConnection(DB_URL, USER, PASS);
     }
 
