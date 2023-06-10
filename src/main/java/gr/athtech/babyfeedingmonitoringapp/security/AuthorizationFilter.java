@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 @Provider
-public class AuthenticationFilter implements ContainerRequestFilter {
+public class AuthorizationFilter implements ContainerRequestFilter {
 
     private static final String AUTHORIZATION_PROPERTY = "Authorization";
     private static final String AUTHENTICATION_SCHEME = "Basic";
