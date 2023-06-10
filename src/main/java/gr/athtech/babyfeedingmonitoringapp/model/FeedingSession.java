@@ -1,5 +1,9 @@
 package gr.athtech.babyfeedingmonitoringapp.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import gr.athtech.babyfeedingmonitoringapp.serializers.LocalDateTimeDeserializer;
+import gr.athtech.babyfeedingmonitoringapp.serializers.LocalDateTimeSerializer;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -8,7 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "FEEDING_SESSIONS")
@@ -24,16 +28,18 @@ public class FeedingSession extends BaseEntity {
     private Double milkConsumed;
 
     @Column(nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
     @NotEmpty
     @NotNull
-    private Date startTime;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime startTime;
 
     @Column(nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
     @NotEmpty
     @NotNull
-    private Date endTime;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime endTime;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

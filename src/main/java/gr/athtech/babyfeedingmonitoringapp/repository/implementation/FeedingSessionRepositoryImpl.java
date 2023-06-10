@@ -1,5 +1,6 @@
 package gr.athtech.babyfeedingmonitoringapp.repository.implementation;
 
+import gr.athtech.babyfeedingmonitoringapp.dto.FeedingSessionDto;
 import gr.athtech.babyfeedingmonitoringapp.model.FeedingSession;
 import gr.athtech.babyfeedingmonitoringapp.model.User;
 import gr.athtech.babyfeedingmonitoringapp.repository.FeedingSessionRepository;
@@ -9,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +29,79 @@ public class FeedingSessionRepositoryImpl implements FeedingSessionRepository {
     }
 
     @Override
+    public List<FeedingSessionDto> findByTimePeriod(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
+        List<FeedingSessionDto> feedingSessions = new ArrayList<>();
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM FEEDING_SESSIONS WHERE user_id = ? AND startTime >= ? AND endTime <= ?")) {
+
+            stmt.setLong(1, userId);
+            stmt.setTimestamp(2, Timestamp.valueOf(startTime));
+            stmt.setTimestamp(3, Timestamp.valueOf(endTime));
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    FeedingSessionDto feedingSession = new FeedingSessionDto();
+                    feedingSession.setId(rs.getLong("id"));
+                    feedingSession.setUserId(rs.getLong("user_id"));
+                    feedingSession.setMilkConsumed(rs.getDouble("milkConsumed"));
+                    feedingSession.setStartTime(rs.getTimestamp("startTime").toLocalDateTime());
+                    feedingSession.setEndTime(rs.getTimestamp("endTime").toLocalDateTime());
+                    feedingSessions.add(feedingSession);
+                }
+            }
+        } catch (SQLException e) {
+            logger.error("Error retrieving feeding sessions by time period: {}", e.getMessage());
+        }
+
+        return feedingSessions;
+    }
+
+    @Override
+    public Double calculateAverageMilkConsumed(LocalDateTime startTime, LocalDateTime endTime) {
+        double averageMilkConsumed = 0.0;
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement("SELECT AVG(milkConsumed) FROM FEEDING_SESSIONS WHERE startTime >= ? AND endTime <= ?")) {
+
+            stmt.setTimestamp(1, Timestamp.valueOf(startTime));
+            stmt.setTimestamp(2, Timestamp.valueOf(endTime));
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    averageMilkConsumed = rs.getDouble(1);
+                }
+            }
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), "Error calculating average milk consumed");
+        }
+
+        return averageMilkConsumed;
+    }
+
+    @Override
+    public Double calculateAverageFeedingDuration(LocalDateTime startTime, LocalDateTime endTime) {
+        double averageDuration = 0.0;
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement("SELECT AVG(endTime - startTime) FROM FEEDING_SESSIONS WHERE startTime >= ? AND endTime <= ?")) {
+
+            stmt.setTimestamp(1, Timestamp.valueOf(startTime));
+            stmt.setTimestamp(2, Timestamp.valueOf(endTime));
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    averageDuration = rs.getDouble(1);
+                }
+            }
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), "Error calculating average feeding duration");
+        }
+
+        return averageDuration;
+    }
+
+    @Override
     public Optional<FeedingSession> create(FeedingSession feedingSession) {
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(
@@ -34,8 +109,8 @@ public class FeedingSessionRepositoryImpl implements FeedingSessionRepository {
                      Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setDouble(1, feedingSession.getMilkConsumed());
-            stmt.setTimestamp(2, new java.sql.Timestamp(feedingSession.getStartTime().getTime()));
-            stmt.setTimestamp(3, new java.sql.Timestamp(feedingSession.getEndTime().getTime()));
+            stmt.setTimestamp(2, Timestamp.valueOf(feedingSession.getStartTime()));
+            stmt.setTimestamp(3, Timestamp.valueOf(feedingSession.getEndTime()));
             stmt.setLong(4, feedingSession.getUser().getId());
 
             int rowsAffected = stmt.executeUpdate();
@@ -62,16 +137,16 @@ public class FeedingSessionRepositoryImpl implements FeedingSessionRepository {
 
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                double milkConsumed = rs.getDouble("milk_consumed");
-                java.sql.Timestamp startTime = rs.getTimestamp("start_time");
-                java.sql.Timestamp endTime = rs.getTimestamp("end_time");
+                double milkConsumed = rs.getDouble("milkConsumed");
+                java.sql.Timestamp startTime = rs.getTimestamp("startTime");
+                java.sql.Timestamp endTime = rs.getTimestamp("endTime");
                 long userId = rs.getLong("user_id");
 
                 FeedingSession feedingSession = new FeedingSession();
                 feedingSession.setId(id);
                 feedingSession.setMilkConsumed(milkConsumed);
-                feedingSession.setStartTime(new java.util.Date(startTime.getTime()));
-                feedingSession.setEndTime(new java.util.Date(endTime.getTime()));
+                feedingSession.setStartTime(startTime.toLocalDateTime());
+                feedingSession.setEndTime(endTime.toLocalDateTime());
 
                 User user = new User();
                 user.setId(userId);
@@ -95,15 +170,15 @@ public class FeedingSessionRepositoryImpl implements FeedingSessionRepository {
             while (rs.next()) {
                 long id = rs.getLong("id");
                 double milkConsumed = rs.getDouble("milkConsumed");
-                java.sql.Timestamp startTime = rs.getTimestamp("startTime");
-                java.sql.Timestamp endTime = rs.getTimestamp("endTime");
+                Timestamp startTime = rs.getTimestamp("startTime");
+                Timestamp endTime = rs.getTimestamp("endTime");
                 long userId = rs.getLong("user_id");
 
                 FeedingSession feedingSession = new FeedingSession();
                 feedingSession.setId(id);
                 feedingSession.setMilkConsumed(milkConsumed);
-                feedingSession.setStartTime(new java.util.Date(startTime.getTime()));
-                feedingSession.setEndTime(new java.util.Date(endTime.getTime()));
+                feedingSession.setStartTime(startTime.toLocalDateTime());
+                feedingSession.setEndTime(endTime.toLocalDateTime());
 
                 User user = new User();
                 user.setId(userId);
@@ -124,8 +199,8 @@ public class FeedingSessionRepositoryImpl implements FeedingSessionRepository {
                      "UPDATE feeding_sessions SET milkconsumed = ?, starttime = ?, endtime = ?, user_id = ? WHERE id = ?")) {
 
             stmt.setDouble(1, feedingSession.getMilkConsumed());
-            stmt.setTimestamp(2, new java.sql.Timestamp(feedingSession.getStartTime().getTime()));
-            stmt.setTimestamp(3, new java.sql.Timestamp(feedingSession.getEndTime().getTime()));
+            stmt.setTimestamp(2, Timestamp.valueOf(feedingSession.getStartTime()));
+            stmt.setTimestamp(3, Timestamp.valueOf(feedingSession.getEndTime()));
             stmt.setLong(4, feedingSession.getUser().getId());
             stmt.setLong(5, feedingSession.getId());
 
