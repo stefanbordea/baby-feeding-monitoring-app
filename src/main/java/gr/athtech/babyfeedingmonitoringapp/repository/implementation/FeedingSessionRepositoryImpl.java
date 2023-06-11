@@ -197,6 +197,7 @@ public class FeedingSessionRepositoryImpl implements FeedingSessionRepository {
                 long userId = rs.getLong("user_id");
 
                 FeedingSession feedingSession = new FeedingSession();
+                feedingSession.setUsers(new ArrayList<>());
                 feedingSession.setId(id);
                 feedingSession.setMilkConsumed(milkConsumed);
                 feedingSession.setStartTime(startTime);
@@ -299,7 +300,7 @@ public class FeedingSessionRepositoryImpl implements FeedingSessionRepository {
     public void delete(FeedingSession feedingSession) {
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement("DELETE FROM feeding_sessions WHERE id = ?")) {
-
+            deleteUsersFromFeedingSession(conn, feedingSession.getId());
             stmt.setLong(1, feedingSession.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
