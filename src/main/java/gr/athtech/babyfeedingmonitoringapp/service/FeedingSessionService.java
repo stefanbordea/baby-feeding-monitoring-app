@@ -3,6 +3,7 @@ package gr.athtech.babyfeedingmonitoringapp.service;
 import gr.athtech.babyfeedingmonitoringapp.dto.AverageFeedingDurationDto;
 import gr.athtech.babyfeedingmonitoringapp.dto.FeedingSessionDto;
 import gr.athtech.babyfeedingmonitoringapp.model.FeedingSession;
+import org.jfree.chart.JFreeChart;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,4 +25,10 @@ public interface FeedingSessionService {
     FeedingSessionDto calculateAverageMilkConsumed(Long userId, LocalDateTime startTime, LocalDateTime endTime);
 
     AverageFeedingDurationDto calculateAverageFeedingDuration(Long userId, LocalDateTime startTime, LocalDateTime endTime);
+
+    JFreeChart generateMilkConsumedChart(List<FeedingSessionDto> feedingSessions);
+
+    JFreeChart generateFeedingDurationChart(List<FeedingSessionDto> feedingSessions);
+
+    String generateBase64Image(JFreeChart chart);
 }
