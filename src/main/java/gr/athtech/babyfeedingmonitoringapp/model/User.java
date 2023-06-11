@@ -31,6 +31,6 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "user")
+    @ManyToMany(mappedBy = "users")
     private List<FeedingSession> feedingSessions;
 }

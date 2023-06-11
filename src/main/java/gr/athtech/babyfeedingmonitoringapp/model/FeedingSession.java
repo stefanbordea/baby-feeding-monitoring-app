@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "FEEDING_SESSIONS")
@@ -41,7 +42,7 @@ public class FeedingSession extends BaseEntity {
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime endTime;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @ManyToMany
+    @JoinTable(name = "USER_FEEDING_SESSION", joinColumns = @JoinColumn(name = "FEEDING_SESSION_ID"), inverseJoinColumns = @JoinColumn(name = "USER_ID"))
+    private List<User> users;
 }
