@@ -21,13 +21,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatNativeDateModule } from '@angular/material/core';
+import { FeedingSessionsComponent } from './components/feeding-sessions/feeding-sessions.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     ChartsComponent,
-    LoginComponent
+    LoginComponent,
+    FeedingSessionsComponent
   ],
   imports: [
     BrowserModule,

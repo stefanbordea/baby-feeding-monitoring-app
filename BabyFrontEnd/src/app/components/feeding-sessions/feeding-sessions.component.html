@@ -1,0 +1,57 @@
+<h2>Feeding Sessions</h2>
+
+<!-- Display feeding sessions -->
+<table>
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Milk Consumed</th>
+    <th>Start Time</th>
+    <th>End Time</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let session of feedingSessions">
+    <td>{{ session.id }}</td>
+    <td>{{ session.milkConsumed }}</td>
+    <td>{{ session.startTime }}</td>
+    <td>{{ session.endTime }}</td>
+    <td>
+      <button (click)="updateFeedingSession(session)">Edit</button>
+      <button (click)="deleteFeedingSession(session.id)">Delete</button>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<!-- Create new feeding session -->
+<h3>Create New Feeding Session</h3>
+<form [formGroup]="formData" (submit)="createFeedingSession()">
+  <label for="milkConsumed">Milk Consumed:</label>
+  <input type="number" id="milkConsumed" formControlName="milkConsumed" required>
+
+  <label for="startTime">Start Time:</label>
+  <input type="date" id="startTime" formControlName="startTime" required>
+
+  <label for="endTime">End Time:</label>
+  <input type="date" id="endTime" formControlName="endTime" required>
+
+  <button type="submit">Create</button>
+</form>
+
+<!-- Average statistics -->
+<h3>Average Statistics</h3>
+<label for="startDate">Start Date:</label>
+<input type="date" id="startDate" [(ngModel)]="startDate" #startDateInput (change)="onStartDateChange(startDateInput.value)">
+<label for="endDate">End Date:</label>
+<input type="date" id="endDate" [(ngModel)]="endDate" #endDateInput (change)="onEndDateChange(endDateInput.value)">
+
+<button (click)="calculateAverageDuration()">Average Session Duration</button>
+<p>Average Session Duration: {{ averageDuration }}</p>
+
+<button (click)="calculateAverageMilk()">Average Milk Consumed</button>
+<p>Average Milk Consumed: {{ averageMilk }}</p>
+
+
+
