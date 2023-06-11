@@ -7,7 +7,6 @@ import gr.athtech.babyfeedingmonitoringapp.model.User;
 import gr.athtech.babyfeedingmonitoringapp.repository.UserRepository;
 import gr.athtech.babyfeedingmonitoringapp.service.UserService;
 import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -15,7 +14,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-@Named
+
 public class UserServiceImpl implements UserService {
 
     @Inject

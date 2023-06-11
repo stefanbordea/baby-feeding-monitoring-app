@@ -17,7 +17,7 @@ import java.util.Optional;
 @Named
 public class UserRepositoryImpl implements UserRepository {
 
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/baby_feeding_application";
+    private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String USER = "postgres";
     private static final String PASS = "password";
 
