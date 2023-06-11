@@ -1,8 +1,8 @@
-import {Component, OnInit} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {Router} from "@angular/router";
-import {catchError, of, tap} from "rxjs";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import { Component, OnInit } from '@angular/core';
+import { HttpClient } from "@angular/common/http";
+import { Router } from "@angular/router";
+import { catchError, of, tap } from "rxjs";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 
 @Component({
   selector: 'app-login',
@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
     private http: HttpClient,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loginForm = this.formBuilder.group({
@@ -38,9 +38,14 @@ export class LoginComponent implements OnInit {
       .pipe(
         tap((response: any) => {
           // Handle successful login
-          // For example, store the token in local storage and navigate to another page
-          localStorage.setItem('token', response.token);
-          this.router.navigate(['/home']);
+          // For example, store the credentials in local storage
+          const encodedCredentials = btoa(`${loginData.username}:${loginData.password}`);
+          localStorage.setItem('credentials', encodedCredentials);
+
+          // Store other relevant data if needed
+          localStorage.setItem('userId', response.id);
+
+          this.router.navigate(['']);
         }),
         catchError((error: any) => {
           // Handle login error
@@ -52,9 +57,3 @@ export class LoginComponent implements OnInit {
       .subscribe();
   }
 }
-
-
-
-
-
-

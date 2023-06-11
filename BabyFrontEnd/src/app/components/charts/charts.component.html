@@ -1,1 +1,22 @@
-<p>charts works!</p>
+<h2>Charts</h2>
+<label for="startDate">Start Date:</label>
+<input type="date" id="startDate" name="startDate" [ngModel]="chartForm.controls['startTime'].value" (ngModelChange)="onStartDateChange($event)">
+<br>
+<label for="endDate">End Date:</label>
+<input type="date" id="endDate" name="endDate" [ngModel]="chartForm.controls['endTime'].value" (ngModelChange)="onEndDateChange($event)">
+<br>
+<button mat-raised-button color="primary" (click)="fetchChart1Data(userId)">Fetch Milk Chart</button>
+<button mat-raised-button color="primary" (click)="fetchChart2Data(userId)">Fetch Duration Chart</button>
+
+
+<!-- Display Chart 1 -->
+<div *ngIf="chart1Data">
+  <h3>Chart 1</h3>
+  <img [src]="chart1Data" alt="Chart 1">
+</div>
+
+<!-- Display Chart 2 -->
+<div *ngIf="chart2Data">
+  <h3>Chart 2</h3>
+  <img [src]="chart2Data" alt="Chart 2">
+</div>
