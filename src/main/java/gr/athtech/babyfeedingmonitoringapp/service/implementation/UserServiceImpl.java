@@ -21,6 +21,23 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
+    public UserDto registerAdmin(AuthenticationRequest authenticationRequest) {
+        if (userRepository.findByUsername(authenticationRequest.getUsername().trim()).isEmpty()) {
+            User user = new User();
+            user.setUsername(authenticationRequest.getUsername().trim());
+            user.setPassword(authenticationRequest.getPassword().trim());
+            user.setRole(Role.ADMIN);
+            userRepository.create(user);
+            UserDto userDto = new UserDto();
+            userDto.setUsername(user.getUsername());
+            userDto.setId(user.getId());
+            userDto.setRole(user.getRole());
+            return userDto;
+        }
+        return null;
+    }
+
+    @Override
     public UserDto register(AuthenticationRequest authenticationRequest) {
         if (userRepository.findByUsername(authenticationRequest.getUsername().trim()).isEmpty()) {
             User user = new User();

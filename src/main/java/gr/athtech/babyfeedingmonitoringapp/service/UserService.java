@@ -23,5 +23,7 @@ public interface UserService {
 
     UserDto register(AuthenticationRequest authenticationRequest);
 
+    UserDto registerAdmin(AuthenticationRequest authenticationRequest);
+
     UserDto login(AuthenticationRequest authenticationRequest);
 }

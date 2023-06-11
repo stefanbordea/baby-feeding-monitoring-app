@@ -29,6 +29,16 @@ public class UserResource {
     }
 
     @POST
+    @Path("/signup/admin")
+    @PermitAll
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response signupAdmin(AuthenticationRequest authenticationRequest) {
+        UserDto userDto = userService.registerAdmin(authenticationRequest);
+        return Response.ok(userDto).build();
+    }
+
+    @POST
     @Path("/login")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
