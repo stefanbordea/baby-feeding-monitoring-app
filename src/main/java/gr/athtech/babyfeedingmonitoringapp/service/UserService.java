@@ -1,5 +1,7 @@
 package gr.athtech.babyfeedingmonitoringapp.service;
 
+import gr.athtech.babyfeedingmonitoringapp.dto.AuthenticationRequest;
+import gr.athtech.babyfeedingmonitoringapp.dto.UserDto;
 import gr.athtech.babyfeedingmonitoringapp.model.Role;
 import gr.athtech.babyfeedingmonitoringapp.model.User;
 
@@ -18,4 +20,8 @@ public interface UserService {
     void delete(User user);
 
     Role checkUserRole(String username, String password);
+
+    UserDto register(AuthenticationRequest authenticationRequest);
+
+    UserDto login(AuthenticationRequest authenticationRequest);
 }

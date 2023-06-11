@@ -63,7 +63,7 @@ public class UserRepositoryImpl implements UserRepository {
 
             stmt.setString(1, user.getUsername());
             stmt.setString(2, user.getPassword());
-            stmt.setString(3, user.getRole().toString());
+            stmt.setString(3, String.valueOf(user.getRole()));
 
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected > 0) {
@@ -104,6 +104,35 @@ public class UserRepositoryImpl implements UserRepository {
             }
         } catch (SQLException e) {
             logger.error("Error while retrieving user with ID {}: {}", id, e.getMessage());
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users WHERE username =?")) {
+
+            stmt.setString(1, username);
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                long id = rs.getLong("id");
+                String usernameDb = rs.getString("username");
+                String password = rs.getString("password");
+                String roleStr = rs.getString("role");
+                Role role = Role.valueOf(roleStr);
+
+                User user = new User();
+                user.setId(id);
+                user.setUsername(usernameDb);
+                user.setPassword(password);
+                user.setRole(role);
+
+                return Optional.of(user);
+            }
+        } catch (SQLException e) {
+            logger.error("Error while retrieving user with username {}: {}", username, e.getMessage());
         }
         return Optional.empty();
     }
